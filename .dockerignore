@@ -1,0 +1,6 @@
+*
+!*.go
+!/Gopkg.lock
+!/Gopkg.toml
+!/Makefile
+!*.py

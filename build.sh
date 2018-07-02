@@ -1,14 +1,10 @@
-#!/bin/bash
+#!/bin/bash -ex
 
-CMD='curl -fL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64 &&
-chmod +x /usr/local/bin/dep &&
-cd /app/src/k8ecr &&
-dep ensure &&
-make &&
-cp k8ecr /build'
+NAME=k8ecr
+TAG="${1:-dev}"
 
-docker run --rm -it \
-       -e GOPATH=/app \
-       -v $(pwd)/build:/build \
-       -v $(pwd):/app/src/k8ecr \
-       golang sh -c "$CMD"
+# Building docker image
+docker build . -t "$NAME:$TAG"
+
+# Copy the binary from Docker back to the host
+docker run --rm -v "$(pwd)/build:/build" "$NAME:$TAG" sh -c "cp /k8ecr /build/k8ecr"
